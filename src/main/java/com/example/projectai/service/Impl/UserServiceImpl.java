@@ -22,12 +22,12 @@ public class UserServiceImpl implements IUserService {
 
   @Override
   public UserEntity save(UserEntity userEntity) {
-    if(!existsByUsername(userEntity.getUsername())){
+    if (!existsByUsername(userEntity.getUsername()) && !existsByEmail(userEntity.getEmail())) {
       userEntity.setAvatar(
           "https://firebasestorage.googleapis.com/v0/b/hoaiphong-4cfd9.appspot.com/o/1637164284891-default_user.png?alt=media&token=63c398b0-3de2-4588-8304-720086d92e15");
       return userRepository.save(userEntity);
     }
-   return null;
+    return null;
   }
 
   @Override
