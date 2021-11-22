@@ -1,6 +1,5 @@
 package com.example.projectai.manager;
 
-import com.example.projectai.dto.RoleDTO;
 import com.example.projectai.dto.UserDTO;
 import java.util.List;
 

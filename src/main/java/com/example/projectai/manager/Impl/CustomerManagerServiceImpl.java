@@ -2,6 +2,7 @@ package com.example.projectai.manager.Impl;
 
 import com.example.projectai.dto.CustomerDTO;
 import com.example.projectai.entity.CustomerEntity;
+import com.example.projectai.entity.UserEntity;
 import com.example.projectai.manager.ICustomerManagerService;
 import com.example.projectai.security.jwt.JwtProvider;
 import com.example.projectai.service.ICustomerService;
@@ -9,6 +10,7 @@ import com.example.projectai.service.IUserService;
 import com.google.common.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,13 +37,29 @@ public class CustomerManagerServiceImpl implements ICustomerManagerService {
   }
 
   @Override
-  public CustomerDTO save(CustomerDTO customerDTO) {
-
-    return null;
+  public CustomerDTO save(CustomerDTO customerDTO, String username) {
+    UserEntity userEntity = userService.findByUsername(username).get();
+    Optional<CustomerEntity> optionalCustomer = customerService.findCustomerByUserId(
+        userEntity.getId());
+    CustomerEntity customerEntity = null;
+    if (!optionalCustomer.isPresent()) {
+      customerEntity = modelMapper.map(customerDTO, CustomerEntity.class);
+      customerEntity.setUser(userEntity);
+    } else {
+      customerEntity = optionalCustomer.get();
+      customerEntity.setFirstName(customerDTO.getFirstName());
+      customerEntity.setLastName(customerDTO.getLastName());
+      if (customerDTO.getPersonalIncome() != null) {
+        customerEntity.setPersonalIncome(customerDTO.getPersonalIncome());
+      }
+      customerEntity.setMonthlySpending(customerDTO.getMonthlySpending());
+    }
+    return modelMapper.map(customerService.save(customerEntity), CustomerDTO.class);
   }
 
   @Override
   public void delete(CustomerDTO customerDTO) {
 
   }
+
 }

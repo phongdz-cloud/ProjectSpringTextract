@@ -28,7 +28,6 @@ public class UserEntity implements Serializable {
   @Field(value = "username")
   @NotNull(message = "Username must be not null!")
   @Size(min = 6, max = 15)
-  @Indexed(unique = true)
   private String username;
   @Field(value = "password")
   @Size(min = 6)

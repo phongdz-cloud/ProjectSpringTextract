@@ -15,7 +15,7 @@ public class CustomerDTO {
 
   private String lastName;
 
-  private Integer personalIncome;
+  private Float personalIncome;
 
   private String monthlySpending;
 

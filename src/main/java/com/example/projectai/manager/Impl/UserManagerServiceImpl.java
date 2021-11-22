@@ -51,4 +51,5 @@ public class UserManagerServiceImpl implements IUserManagerService {
   public Boolean existsByUsername(String username) {
     return userService.existsByUsername(username);
   }
+
 }
