@@ -1,4 +1,5 @@
 HELP.md
+config.env
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -10,7 +11,7 @@ target/
 .factorypath
 .project
 .settings
-.springBeans
+.springBeanso
 .sts4-cache
 
 ### IntelliJ IDEA ###

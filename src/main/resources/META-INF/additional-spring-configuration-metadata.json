@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "FIREBASE_BUCKET_NAME",
+      "type": "java.lang.String",
+      "description": "Description for FIREBASE_BUCKET_NAME."
+  }
+] }
