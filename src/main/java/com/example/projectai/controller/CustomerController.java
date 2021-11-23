@@ -5,6 +5,7 @@ import com.example.projectai.exception.RecordNotFoundException;
 import com.example.projectai.manager.ICustomerManagerService;
 import com.example.projectai.security.jwt.JwtProvider;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +45,19 @@ public class CustomerController {
     return ResponseEntity.ok(newCustomerDTO);
   }
 
-//  @RequestMapping(value = "/customer/{username}", method = RequestMethod.GET)
-//  public ResponseEntity<UserDTO> findCustomerByUser(@PathVariable String username) {
-//    UserDTO userDTO = customerManagerService.findByUser(username);
-//    if (userDTO == null) {
-//      throw new RecordNotFoundException("Find customer by username failed: " + username);
-//    }
-//    return ResponseEntity.ok(userDTO);
-//  }
+  @RequestMapping(value = "/customerprofile", method = RequestMethod.GET)
+  public ResponseEntity<CustomerDTO> getProfileCustomer(HttpServletRequest request) {
+    Optional<CustomerDTO> optionalCustomerDTO = Optional.empty();
+    if (jwtProvider.preHandle(request)) {
+      String username = jwtProvider.getUsernameFormToken(jwtProvider.getTokenWrapper());
+      optionalCustomerDTO = customerManagerService.getCustomerByToken(
+          username);
+      if (!optionalCustomerDTO.isPresent()) {
+        throw new RecordNotFoundException("Not found user profile Customer: " + username);
+      }
+    }
+    return ResponseEntity.ok(optionalCustomerDTO.get());
+  }
+
 
 }

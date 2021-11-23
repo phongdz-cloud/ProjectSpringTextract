@@ -1,5 +1,6 @@
 package com.example.projectai.manager;
 
+import com.example.projectai.dto.CustomerDTO;
 import com.example.projectai.dto.UserDTO;
 import java.util.List;
 
@@ -12,5 +13,6 @@ public interface IUserManagerService {
   Boolean existsByEmail(String email);
 
   Boolean existsByUsername(String username);
+
 
 }

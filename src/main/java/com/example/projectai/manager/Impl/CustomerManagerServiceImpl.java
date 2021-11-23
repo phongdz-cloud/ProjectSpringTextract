@@ -36,6 +36,7 @@ public class CustomerManagerServiceImpl implements ICustomerManagerService {
     return modelMapper.map(customerEntities, listType);
   }
 
+
   @Override
   public CustomerDTO save(CustomerDTO customerDTO, String username) {
     UserEntity userEntity = userService.findByUsername(username).get();
@@ -60,6 +61,18 @@ public class CustomerManagerServiceImpl implements ICustomerManagerService {
   @Override
   public void delete(CustomerDTO customerDTO) {
 
+  }
+
+  @Override
+  public Optional<CustomerDTO> getCustomerByToken(String username) {
+    UserEntity userEntity = userService.findByUsername(username).get();
+    Optional<CustomerEntity> optionalCustomer = customerService.findCustomerByUserId(
+        userEntity.getId());
+    CustomerDTO customerDTO = null;
+    if (optionalCustomer.isPresent()) {
+      customerDTO = modelMapper.map(optionalCustomer.get(), CustomerDTO.class);
+    }
+    return Optional.ofNullable(customerDTO);
   }
 
 }

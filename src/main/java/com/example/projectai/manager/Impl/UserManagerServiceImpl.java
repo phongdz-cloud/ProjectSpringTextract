@@ -1,6 +1,7 @@
 package com.example.projectai.manager.Impl;
 
 import com.example.projectai.Constant.SystemConstant;
+import com.example.projectai.dto.CustomerDTO;
 import com.example.projectai.dto.UserDTO;
 import com.example.projectai.entity.RoleEntity;
 import com.example.projectai.entity.UserEntity;
@@ -51,5 +52,7 @@ public class UserManagerServiceImpl implements IUserManagerService {
   public Boolean existsByUsername(String username) {
     return userService.existsByUsername(username);
   }
+
+
 
 }
