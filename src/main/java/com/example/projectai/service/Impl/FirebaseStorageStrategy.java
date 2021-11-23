@@ -46,7 +46,7 @@ public class FirebaseStorageStrategy implements StorageStrategy {
 
   private String projectId;
 
-  private final StringBuilder firebaseURL = new StringBuilder("");
+  private StringBuilder firebaseURL;
 
   public FirebaseStorageStrategy(Environment environment) {
     this.environment = environment;
@@ -65,6 +65,7 @@ public class FirebaseStorageStrategy implements StorageStrategy {
 
   @Override
   public String[] uploadFile(MultipartFile multipartFile) throws Exception {
+    firebaseURL = new StringBuilder("");
     firebaseURL.append("https://firebasestorage.googleapis.com/v0/b/").append(bucketName)
         .append("/o/");
     File file = convertMultiPartToFile(multipartFile);

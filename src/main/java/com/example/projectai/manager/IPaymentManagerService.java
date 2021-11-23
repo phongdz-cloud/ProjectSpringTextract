@@ -12,7 +12,10 @@ public interface IPaymentManagerService {
 
   PaymentDTO save(String username, MultipartFile file);
 
-  void delete(PaymentDTO paymentDTO);
+  PaymentDTO update(PaymentDTO paymentDTO);
 
-  Optional<PaymentEntity> findPaymentByCustomer(String username);
+  Integer delete(String[] id);
+
+  List<PaymentEntity> findPaymentByCustomer(String username);
 }
+

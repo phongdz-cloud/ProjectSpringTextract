@@ -10,8 +10,8 @@ public interface IPaymentService {
 
   PaymentEntity save(PaymentEntity paymentEntity);
 
-  void delete(PaymentEntity paymentEntity);
+  boolean delete(String id);
 
-  Optional<PaymentEntity> findByCustomer(final String id);
+  List<PaymentEntity> findByCustomer(final String id);
 
 }

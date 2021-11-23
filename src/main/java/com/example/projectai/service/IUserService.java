@@ -12,7 +12,6 @@ public interface IUserService {
 
   Optional<UserEntity> findByUsername(String username);
 
-
   Boolean existsByEmail(String email);
 
   Boolean existsByUsername(String username);

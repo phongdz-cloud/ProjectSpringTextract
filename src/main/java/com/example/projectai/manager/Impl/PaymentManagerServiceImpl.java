@@ -15,6 +15,7 @@ import com.google.common.reflect.TypeToken;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.modelmapper.ModelMapper;
@@ -82,21 +83,34 @@ public class PaymentManagerServiceImpl implements IPaymentManagerService {
   }
 
   @Override
-  public void delete(PaymentDTO paymentDTO) {
+  public PaymentDTO update(PaymentDTO paymentDTO) {
+    PaymentEntity paymentEntity = modelMapper.map(paymentDTO, PaymentEntity.class);
+    paymentEntity.setUploadDate(LocalDateTime.now().toString());
+    return modelMapper.map(paymentService.save(paymentEntity), PaymentDTO.class);
+  }
+
+
+  @Override
+  public Integer delete(String[] ids) {
+    int count = 0;
+    for (String id : ids) {
+      if (paymentService.delete(id)) {
+        count++;
+      }
+    }
+    return count;
   }
 
   @Override
-  public Optional<PaymentEntity> findPaymentByCustomer(String username) {
-    Optional<PaymentEntity> optionalPayment = Optional.empty();
+  public List<PaymentEntity> findPaymentByCustomer(String username) {
+    List<PaymentEntity> paymentEntities = new ArrayList<>();
     UserEntity userEntity = userService.findByUsername(username).get();
     optionalCustomer = customerService.findCustomerByUserId(
         userEntity.getId());
     if (optionalCustomer.isPresent()) {
-      optionalPayment = paymentService.findByCustomer(
+      paymentEntities = paymentService.findByCustomer(
           optionalCustomer.get().getId());
     }
-    return optionalPayment;
+    return paymentEntities;
   }
-
-
 }

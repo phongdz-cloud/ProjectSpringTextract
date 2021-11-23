@@ -1,6 +1,7 @@
 package com.example.projectai.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,11 +17,11 @@ public class DailyMoneyDTO {
 
   private Float money;
 
-  private LocalDateTime date;
+  private String date;
 
   private String description;
 
-  private CustomerDTO customerDTO;
+//  private CustomerDTO customerDTO;
 
-  private PaymentDTO paymentDTO;
+  private List<PaymentDTO> paymentDTO;
 }

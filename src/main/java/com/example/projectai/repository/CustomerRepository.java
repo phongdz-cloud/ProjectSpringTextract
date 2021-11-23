@@ -12,5 +12,6 @@ public interface CustomerRepository extends MongoRepository<CustomerEntity, Stri
   @Query("{'user.id': ?0}")
   Optional<CustomerEntity> findByUser(final String id);
 
+
 }
 

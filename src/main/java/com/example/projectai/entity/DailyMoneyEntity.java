@@ -1,6 +1,11 @@
 package com.example.projectai.entity;
 
+import io.github.kaiso.relmongo.annotation.CascadeType;
+import io.github.kaiso.relmongo.annotation.FetchType;
+import io.github.kaiso.relmongo.annotation.JoinProperty;
+import io.github.kaiso.relmongo.annotation.OneToMany;
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -26,13 +31,17 @@ public class DailyMoneyEntity {
   @NotNull(message = "money must be not null")
   private Float money;
   @Field(value = "date")
-  private LocalDateTime date;
+  private String date;
   @Field(value = "description")
   @NotNull(message = "description must be not null")
   @Size(min = 2)
   private String description;
-  @Field(value = "customer")
-  private CustomerEntity customer;
-  @Field(value = "payment")
-  private PaymentEntity payment;
+//  @Field(value = "customer")
+//  private CustomerEntity customer;
+  //  @Field(value = "payment")
+  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+  @JoinProperty(name = "payments")
+  private List<PaymentEntity> payments;
+
+
 }

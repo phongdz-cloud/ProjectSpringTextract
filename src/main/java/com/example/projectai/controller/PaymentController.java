@@ -1,13 +1,16 @@
 package com.example.projectai.controller;
 
 import com.example.projectai.dto.PaymentDTO;
+import com.example.projectai.exception.RecordNotFoundException;
 import com.example.projectai.manager.IPaymentManagerService;
 import com.example.projectai.security.jwt.JwtProvider;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,7 +36,7 @@ public class PaymentController {
   @RequestMapping(value = "/payment", method = RequestMethod.POST)
   public ResponseEntity<PaymentDTO> createPayment(@RequestParam("file") MultipartFile file,
       HttpServletRequest request
-      ) {
+  ) {
     PaymentDTO paymentDTO = null;
     if (jwtProvider.preHandle(request)) {
       String username = jwtProvider.getUsernameFormToken(jwtProvider.getTokenWrapper());
@@ -43,5 +46,37 @@ public class PaymentController {
       }
     }
     return ResponseEntity.ok(paymentDTO);
+  }
+
+  @RequestMapping(value = "/payment", method = RequestMethod.PUT)
+  public ResponseEntity<PaymentDTO> updatePayment(HttpServletRequest request,
+      @Valid @RequestBody PaymentDTO paymentDTO) {
+    PaymentDTO payment = null;
+    if (jwtProvider.preHandle(request)) {
+      String username = jwtProvider.getUsernameFormToken(jwtProvider.getTokenWrapper());
+      if (username != null) {
+        payment = paymentManagerService.update(paymentDTO);
+        if (payment == null) {
+          throw new RecordNotFoundException("Not updated payment: " + username);
+        }
+      }
+    }
+    return ResponseEntity.ok(payment);
+  }
+
+  @RequestMapping(value = "/payment", method = RequestMethod.DELETE)
+  public ResponseEntity<String> deletePayment(@RequestBody String[] ids,
+      HttpServletRequest request) {
+    int count = 0;
+    if (jwtProvider.preHandle(request)) {
+      String username = jwtProvider.getUsernameFormToken(jwtProvider.getTokenWrapper());
+      if (username != null) {
+        count = paymentManagerService.delete(ids);
+        if (count == 0) {
+          throw new RecordNotFoundException("Not deleted element by ids: " + ids.toString());
+        }
+      }
+    }
+    return ResponseEntity.ok("Deleted by elements: " + count);
   }
 }

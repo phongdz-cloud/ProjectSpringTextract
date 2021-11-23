@@ -7,7 +7,7 @@ public interface IDailyMoneyManagerService {
 
   List<DailyMoneyDTO> findAllDailyMoneyDTO();
 
-  DailyMoneyDTO save(DailyMoneyDTO dailyMoneyDTO);
+  DailyMoneyDTO save(DailyMoneyDTO dailyMoneyDTO, String username);
 
   void delete(DailyMoneyDTO dailyMoneyDTO);
 }

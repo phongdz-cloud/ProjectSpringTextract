@@ -36,7 +36,6 @@ public class CustomerManagerServiceImpl implements ICustomerManagerService {
     return modelMapper.map(customerEntities, listType);
   }
 
-
   @Override
   public CustomerDTO save(CustomerDTO customerDTO, String username) {
     UserEntity userEntity = userService.findByUsername(username).get();
@@ -74,5 +73,7 @@ public class CustomerManagerServiceImpl implements ICustomerManagerService {
     }
     return Optional.ofNullable(customerDTO);
   }
+
+
 
 }

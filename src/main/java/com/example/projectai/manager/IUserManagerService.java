@@ -14,5 +14,4 @@ public interface IUserManagerService {
 
   Boolean existsByUsername(String username);
 
-
 }
