@@ -1,6 +1,7 @@
 package com.example.projectai.controller;
 
 import com.example.projectai.dto.FileDTO;
+import com.example.projectai.exception.RecordNotFoundException;
 import com.example.projectai.service.Impl.FirebaseStorageStrategy;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -32,6 +33,9 @@ public class StorageController {
       throws Exception {
     log.info("REST request to upload file");
     FileDTO fileDTO = storageStrategy.uploadFileDTO(file);
+    if (fileDTO == null) {
+      throw new RecordNotFoundException("Not update file procuess");
+    }
     return new ResponseEntity<>(fileDTO, null, HttpStatus.OK);
   }
 

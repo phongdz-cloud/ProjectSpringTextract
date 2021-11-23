@@ -6,6 +6,8 @@ import com.example.projectai.dto.SpecialField;
 import com.example.projectai.dto.SummaryField;
 import com.example.projectai.entity.TextractEntity;
 import com.example.projectai.service.ITextractService;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +30,10 @@ public class TextractServiceImpl implements ITextractService {
 
   public final TextractEntity textractEntity = new TextractEntity();
 
-  public void initializeTextract(InputStream fis) {
+  public void initializeTextract(File file) {
     try {
+      InputStream fis = null;
+      fis = new FileInputStream(file);
       SdkBytes bytes = SdkBytes.fromInputStream(fis);
       Document doc = Document
           .builder()

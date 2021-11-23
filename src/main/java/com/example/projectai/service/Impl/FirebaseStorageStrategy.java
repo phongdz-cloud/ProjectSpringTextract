@@ -35,6 +35,7 @@ public class FirebaseStorageStrategy implements StorageStrategy {
 
   @Autowired
   TextractServiceImpl textractService;
+
   private final Logger log = LoggerFactory.getLogger(FirebaseStorageStrategy.class);
 
   private final Environment environment;
@@ -57,13 +58,6 @@ public class FirebaseStorageStrategy implements StorageStrategy {
     projectId = environment.getRequiredProperty("FIREBASE_PROJECT_ID");
 
     InputStream firebaseCredential = createFirebaseCredential();
-//    InputStream firebaseCredential = this.getClass().getClassLoader()
-//        .getResourceAsStream("./hoaiphong-4cfd9-firebase-adminsdk-hk36h-c1278bc2a7.json");
-//    FirebaseOptions options = FirebaseOptions.builder()
-//        .setCredentials(GoogleCredentials.fromStream(firebaseCredential))
-//        .setStorageBucket("hoaiphong-4cfd9.appspot.com")
-//        .build();
-//    FirebaseApp.initializeApp(options);
     this.storageOptions = StorageOptions.newBuilder()
         .setCredentials(GoogleCredentials.fromStream(firebaseCredential))
         .build();
@@ -71,10 +65,8 @@ public class FirebaseStorageStrategy implements StorageStrategy {
 
   @Override
   public String[] uploadFile(MultipartFile multipartFile) throws Exception {
-    log.debug("bucket name ====" + bucketName);
     firebaseURL.append("https://firebasestorage.googleapis.com/v0/b/").append(bucketName)
         .append("/o/");
-
     File file = convertMultiPartToFile(multipartFile);
     Path filePath = file.toPath();
     String objectName = generateFileName(multipartFile);
@@ -98,7 +90,7 @@ public class FirebaseStorageStrategy implements StorageStrategy {
     Blob blob = storage.get(BlobId.of(bucketName, fileName));
     ReadChannel reader = blob.reader();
     InputStream inputStream = Channels.newInputStream(reader);
-    textractService.initializeTextract(inputStream);
+//    textractService.initializeTextract(inputStream);
     byte[] content = null;
     log.info("File downloaded successfully");
     return ResponseEntity.ok(textractService.textractEntity);
@@ -117,7 +109,7 @@ public class FirebaseStorageStrategy implements StorageStrategy {
         multiPart.getOriginalFilename().replace(" ", "_"));
   }
 
-  private File convertMultiPartToFile(MultipartFile file) throws Exception {
+  public File convertMultiPartToFile(MultipartFile file) throws Exception {
     File convertedFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
     FileOutputStream fos = new FileOutputStream(convertedFile);
     fos.write(file.getBytes());
