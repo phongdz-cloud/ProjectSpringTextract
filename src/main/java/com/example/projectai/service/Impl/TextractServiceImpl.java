@@ -4,7 +4,7 @@ import com.example.projectai.dto.BoundingBox;
 import com.example.projectai.dto.ItemLine;
 import com.example.projectai.dto.SpecialField;
 import com.example.projectai.dto.SummaryField;
-import com.example.projectai.entity.TextractEntity;
+import com.example.projectai.dto.TextractDTO;
 import com.example.projectai.service.ITextractService;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,8 +27,7 @@ import software.amazon.awssdk.services.textract.model.LineItemGroup;
 @Service
 public class TextractServiceImpl implements ITextractService {
 
-
-  public final TextractEntity textractEntity = new TextractEntity();
+  public final TextractDTO textractDTO = new TextractDTO();
 
   public void initializeTextract(File file) {
     try {
@@ -52,8 +51,8 @@ public class TextractServiceImpl implements ITextractService {
       AnalyzeExpenseResponse response = textractClient.analyzeExpense(request);
       List<ExpenseDocument> test = response.expenseDocuments();
       for (ExpenseDocument exd : test) {
-        DisplayAnalyzeExpenseSummaryInfo(exd, textractEntity);
-        DisplayAnalyzeExpenseLineItemGroupsInfo(exd, textractEntity);
+        DisplayAnalyzeExpenseSummaryInfo(exd);
+        DisplayAnalyzeExpenseLineItemGroupsInfo(exd);
       }
 
     } catch (Exception e) {
@@ -62,8 +61,7 @@ public class TextractServiceImpl implements ITextractService {
   }
 
   @Override
-  public void DisplayAnalyzeExpenseSummaryInfo(ExpenseDocument expenseDocument,
-      TextractEntity textract) {
+  public void DisplayAnalyzeExpenseSummaryInfo(ExpenseDocument expenseDocument) {
     if (expenseDocument.hasSummaryFields()) {
       List<ExpenseField> summaryfields = expenseDocument.summaryFields();
       for (ExpenseField summaryfield : summaryfields) {
@@ -78,13 +76,13 @@ public class TextractServiceImpl implements ITextractService {
               other.setFieldName(summaryfield.labelDetection().text());
               other.setValue(valueDetection);
               other.setBoundingBox(boundingBox);
-              textractEntity.getSummaryFields().add(other);
+              textractDTO.getSummaryFields().add(other);
             } else {
               SpecialField specialField = new SpecialField();
               specialField.setFieldName(type);
               specialField.setValue(valueDetection);
               specialField.setBoundingBox(boundingBox);
-              textractEntity.getSpecialFields().add(specialField);
+              textractDTO.getSpecialFields().add(specialField);
             }
           }
         }
@@ -93,8 +91,7 @@ public class TextractServiceImpl implements ITextractService {
   }
 
   @Override
-  public void DisplayAnalyzeExpenseLineItemGroupsInfo(ExpenseDocument expenseDocument,
-      TextractEntity textract) {
+  public void DisplayAnalyzeExpenseLineItemGroupsInfo(ExpenseDocument expenseDocument) {
     if (expenseDocument.hasLineItemGroups()) {
       List<LineItemGroup> lineItemGroups = expenseDocument.lineItemGroups();
       for (LineItemGroup lineItemGroup : lineItemGroups) {
@@ -109,12 +106,16 @@ public class TextractServiceImpl implements ITextractService {
               if (name != null && price != null) {
                 ItemLine itemLine = new ItemLine();
                 itemLine.setItem(name);
+                if (price.contains(",")) {
+                  int index = price.indexOf(",");
+                  price = price.substring(0, index) + "." + price.substring(index + 1);
+                }
                 itemLine.setPrice(Float.parseFloat(price));
                 boundingBoxItem.setBox(lineItemFields.lineItemExpenseFields().get(0));
                 boundingBoxPrice.setBox(lineItemFields.lineItemExpenseFields().get(1));
                 itemLine.setBoundingBoxItem(boundingBoxItem);
                 itemLine.setBoundingBoxPrice(boundingBoxPrice);
-                textractEntity.getItemLines().add(itemLine);
+                textractDTO.getItemLines().add(itemLine);
               }
             }
           }

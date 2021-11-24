@@ -4,6 +4,7 @@ import com.example.projectai.entity.PaymentEntity;
 import com.example.projectai.repository.PaymentRepository;
 import com.example.projectai.service.IPaymentService;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +43,11 @@ public class PaymentServiceImpl implements IPaymentService {
   @Override
   public List<PaymentEntity> findAllByCustomerAndType(String id, String type) {
     return repository.findAllByCustomerAndType(id, type);
+  }
+
+  @Override
+  public Optional<PaymentEntity> findByCustomer(String id) {
+    return repository.findByCustomer(id);
   }
 
 }

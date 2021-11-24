@@ -26,7 +26,6 @@ public class PaymentEntity {
   @Id
   private String id;
   @Field(value = "image_bill")
-  @NotNull(message = "image_bill must be not null")
   @Size(min = 2)
   private String imageBill;
   @Field(value = "upload_date")
@@ -41,8 +40,7 @@ public class PaymentEntity {
   private List<SpecialField> specialFields;
   @Field(value = "summary_fields")
   private List<SummaryField> summaryFields;
-
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
   @JoinProperty(name = "customer")
   private CustomerEntity customer;
 }

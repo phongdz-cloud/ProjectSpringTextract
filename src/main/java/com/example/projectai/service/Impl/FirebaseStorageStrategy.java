@@ -93,7 +93,7 @@ public class FirebaseStorageStrategy implements StorageStrategy {
     InputStream inputStream = Channels.newInputStream(reader);
     byte[] content = null;
     log.info("File downloaded successfully");
-    return ResponseEntity.ok(textractService.textractEntity);
+    return ResponseEntity.ok(textractService.textractDTO);
   }
 
   private String generateFileName(MultipartFile multiPart) {

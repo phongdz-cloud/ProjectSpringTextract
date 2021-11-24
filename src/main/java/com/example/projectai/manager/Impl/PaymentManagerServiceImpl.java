@@ -72,9 +72,9 @@ public class PaymentManagerServiceImpl implements IPaymentManagerService {
           paymentEntity.setImageBill(fileDTO.getFileDownloadUri());
           File file = firebaseStorageStrategy.convertMultiPartToFile(multiFile);
           textractService.initializeTextract(file);
-          paymentEntity.setItemLines(textractService.textractEntity.getItemLines());
-          paymentEntity.setSpecialFields(textractService.textractEntity.getSpecialFields());
-          paymentEntity.setSummaryFields(textractService.textractEntity.getSummaryFields());
+          paymentEntity.setItemLines(textractService.textractDTO.getItemLines());
+          paymentEntity.setSpecialFields(textractService.textractDTO.getSpecialFields());
+          paymentEntity.setSummaryFields(textractService.textractDTO.getSummaryFields());
           return modelMapper.map(paymentService.save(paymentEntity), PaymentDTO.class);
         }
       }
@@ -83,6 +83,35 @@ public class PaymentManagerServiceImpl implements IPaymentManagerService {
     }
     return null;
   }
+
+  @Override
+  public PaymentDTO saveHandPayment(String username, PaymentDTO paymentDTO) {
+    PaymentEntity paymentEntity = null;
+    try {
+      UserEntity userEntity = userService.findByUsername(username).get();
+      optionalCustomer = customerService.findCustomerByUserId(
+          userEntity.getId());
+      if (optionalCustomer.isPresent()) {
+        paymentEntity = modelMapper.map(paymentDTO, PaymentEntity.class);
+        Optional<PaymentEntity> optionalPaymentEntity = paymentService.findByCustomer(
+            optionalCustomer.get().getId());
+        if (!optionalPaymentEntity.isPresent()) {
+          paymentEntity.setUploadDate(LocalDateTime.now().toString());
+          paymentEntity.setCustomer(optionalCustomer.get());
+        } else {
+          paymentEntity = optionalPaymentEntity.get();
+          paymentEntity.setUploadDate(LocalDateTime.now().toString());
+          paymentEntity.setType(paymentDTO.getType());
+          paymentEntity.setItemLines(paymentDTO.getItemLines());
+          paymentEntity.setSpecialFields(paymentDTO.getSpecialFields());
+        }
+      }
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+    return modelMapper.map(paymentService.save(paymentEntity), PaymentDTO.class);
+  }
+
 
   @Override
   public PaymentDTO update(PaymentDTO paymentDTO) {
@@ -117,7 +146,7 @@ public class PaymentManagerServiceImpl implements IPaymentManagerService {
   }
 
   @Override
-  public List<PaymentDTO> findAllPaymentByCustomer(String username) {
+  public List<PaymentDTO> findAllPaymentByCustomer(String username, String type) {
     List<PaymentDTO> paymentDTOS = null;
     Type listType = new TypeToken<List<PaymentDTO>>() {
     }.getType();
@@ -126,7 +155,7 @@ public class PaymentManagerServiceImpl implements IPaymentManagerService {
         userEntity.getId());
     if (optionalCustomer.isPresent()) {
       paymentDTOS = modelMapper.map(
-          paymentService.findAllByCustomerAndType(optionalCustomer.get().getId(), "DAILY"),
+          paymentService.findAllByCustomerAndType(optionalCustomer.get().getId(), type),
           listType);
     }
     return paymentDTOS;

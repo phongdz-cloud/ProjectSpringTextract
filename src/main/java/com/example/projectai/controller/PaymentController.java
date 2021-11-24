@@ -50,6 +50,22 @@ public class PaymentController {
     return ResponseEntity.ok(paymentDTO);
   }
 
+  @RequestMapping(value = "/handPayment", method = RequestMethod.POST)
+  public ResponseEntity<PaymentDTO> createOrUpdatePayment(@Valid @RequestBody PaymentDTO paymentDTO,
+      HttpServletRequest request) {
+    PaymentDTO payment = null;
+    if (jwtProvider.preHandle(request)) {
+      String username = jwtProvider.getUsernameFormToken(jwtProvider.getTokenWrapper());
+      if (username != null) {
+        payment = paymentManagerService.saveHandPayment(username, paymentDTO);
+        if (payment == null) {
+          throw new RecordNotFoundException("Not create or update payment: " + username);
+        }
+      }
+    }
+    return ResponseEntity.ok(payment);
+  }
+
   @RequestMapping(value = "/payment", method = RequestMethod.PUT)
   public ResponseEntity<PaymentDTO> updatePayment(HttpServletRequest request,
       @Valid @RequestBody PaymentDTO paymentDTO) {
@@ -67,7 +83,7 @@ public class PaymentController {
   }
 
   @RequestMapping(value = "/payment", method = RequestMethod.DELETE)
-  public ResponseEntity<String> deletePayment(@RequestBody Map<String,List<String>> ids,
+  public ResponseEntity<String> deletePayment(@RequestBody Map<String, List<String>> ids,
       HttpServletRequest request) {
     int count = 0;
     if (jwtProvider.preHandle(request)) {
@@ -83,12 +99,13 @@ public class PaymentController {
   }
 
   @RequestMapping(value = "/paymentOfCustomer", method = RequestMethod.GET)
-  public ResponseEntity<List<PaymentDTO>> getPaymentOfCustomer(HttpServletRequest request) {
+  public ResponseEntity<List<PaymentDTO>> getPaymentOfCustomer(HttpServletRequest request,
+      @RequestParam("type") String type) {
     List<PaymentDTO> paymentDTOS = null;
     if (jwtProvider.preHandle(request)) {
       String username = jwtProvider.getUsernameFormToken(jwtProvider.getTokenWrapper());
       if (username != null) {
-        paymentDTOS = paymentManagerService.findAllPaymentByCustomer(username);
+        paymentDTOS = paymentManagerService.findAllPaymentByCustomer(username, type);
         if (paymentDTOS == null) {
           throw new RecordNotFoundException("Not payment of customer: " + username);
         }
