@@ -27,10 +27,11 @@ import software.amazon.awssdk.services.textract.model.LineItemGroup;
 @Service
 public class TextractServiceImpl implements ITextractService {
 
-  public final TextractDTO textractDTO = new TextractDTO();
+  public TextractDTO textractDTO = null;
 
   public void initializeTextract(File file) {
     try {
+      textractDTO = new TextractDTO();
       InputStream fis = null;
       fis = new FileInputStream(file);
       SdkBytes bytes = SdkBytes.fromInputStream(fis);
