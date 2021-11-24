@@ -10,6 +10,7 @@ import com.example.projectai.service.IUserService;
 import com.google.common.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +59,14 @@ public class CustomerManagerServiceImpl implements ICustomerManagerService {
   }
 
   @Override
-  public void delete(CustomerDTO customerDTO) {
-
+  public Integer delete(Map<String, List<String>> ids) {
+    int count = 0;
+    for (String id : ids.get("ids")) {
+      if (customerService.delete(id)) {
+        count++;
+      }
+    }
+    return count;
   }
 
   @Override
@@ -73,7 +80,6 @@ public class CustomerManagerServiceImpl implements ICustomerManagerService {
     }
     return Optional.ofNullable(customerDTO);
   }
-
 
 
 }

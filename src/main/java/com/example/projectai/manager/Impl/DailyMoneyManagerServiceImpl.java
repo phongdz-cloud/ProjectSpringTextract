@@ -15,6 +15,7 @@ import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,28 +51,50 @@ public class DailyMoneyManagerServiceImpl implements IDailyMoneyManagerService {
 
   @Override
   public DailyMoneyDTO save(DailyMoneyDTO dailyMoneyDTO, String username) {
-    List<PaymentEntity> paymentEntities = findPaymentByCustomer(username);
-    DailyMoneyEntity dailyMoneyEntity = modelMapper.map(dailyMoneyDTO, DailyMoneyEntity.class);
-    dailyMoneyEntity.setPayments(paymentEntities);
-    dailyMoneyEntity.setDate(LocalDateTime.now().toString());
-
-    return null;
+    DailyMoneyEntity dailyMoneyEntity = null;
+    try {
+      UserEntity userEntity = userService.findByUsername(username).get();
+      Optional<CustomerEntity> optionalCustomer = customerService.findCustomerByUserId(
+          userEntity.getId());
+      if (optionalCustomer.isPresent()) {
+        dailyMoneyEntity = modelMapper.map(dailyMoneyDTO, DailyMoneyEntity.class);
+        Optional<DailyMoneyEntity> optionalDailyMoneyEntity = dailyMoneyService.findByCustomer(
+            optionalCustomer.get().getId());
+        if (!optionalDailyMoneyEntity.isPresent()) {
+          dailyMoneyEntity.setDate(LocalDateTime.now().toString());
+          dailyMoneyEntity.setCustomer(optionalCustomer.get());
+        } else {
+          dailyMoneyEntity = optionalDailyMoneyEntity.get();
+          dailyMoneyEntity.setNameMoney(dailyMoneyDTO.getNameMoney());
+          dailyMoneyEntity.setDescription(dailyMoneyDTO.getDescription());
+          if (dailyMoneyDTO.getMoney() != null) {
+            dailyMoneyEntity.setMoney(dailyMoneyDTO.getMoney());
+          }
+        }
+      }
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+    return modelMapper.map(dailyMoneyService.save(dailyMoneyEntity), DailyMoneyDTO.class);
   }
 
   @Override
-  public void delete(DailyMoneyDTO dailyMoneyDTO) {
-
+  public Integer delete(Map<String, List<String>> ids) {
+    int count = 0;
+    for (String id : ids.get("ids")) {
+      if (dailyMoneyService.delete(id)) {
+        count++;
+      }
+    }
+    return count;
   }
+
 
   public List<PaymentEntity> findPaymentByCustomer(String username) {
     List<PaymentEntity> paymentEntities = new ArrayList<>();
     UserEntity userEntity = userService.findByUsername(username).get();
     Optional<CustomerEntity> optionalCustomer = customerService.findCustomerByUserId(
         userEntity.getId());
-    if (optionalCustomer.isPresent()) {
-      paymentEntities = paymentService.findByCustomer(
-          optionalCustomer.get().getId());
-    }
     return paymentEntities;
   }
 }

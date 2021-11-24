@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +28,7 @@ public class StorageController {
   private FirebaseStorageStrategy storageStrategy;
 
 
-  @RequestMapping(value = "upload-file", method = RequestMethod.POST)
+  @RequestMapping(value = "upload-file", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Transactional
   public ResponseEntity<FileDTO> uploadInvestigation(@RequestParam("file") MultipartFile file)
       throws Exception {

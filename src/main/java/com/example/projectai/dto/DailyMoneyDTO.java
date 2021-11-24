@@ -1,7 +1,6 @@
 package com.example.projectai.dto;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,7 @@ public class DailyMoneyDTO {
 
   private String description;
 
-//  private CustomerDTO customerDTO;
+  @JsonIgnore
+  private CustomerDTO customerDTO;
 
-  private List<PaymentDTO> paymentDTO;
 }

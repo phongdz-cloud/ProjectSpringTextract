@@ -3,7 +3,6 @@ package com.example.projectai.entity;
 import com.example.projectai.dto.ItemLine;
 import com.example.projectai.dto.SpecialField;
 import com.example.projectai.dto.SummaryField;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.kaiso.relmongo.annotation.CascadeType;
 import io.github.kaiso.relmongo.annotation.FetchType;
 import io.github.kaiso.relmongo.annotation.JoinProperty;
@@ -32,14 +31,18 @@ public class PaymentEntity {
   private String imageBill;
   @Field(value = "upload_date")
   private String uploadDate;
+  @Field(value = "type")
+  @NotNull(message = "type must be not null")
+  @Size(min = 4)
+  private String type;
   @Field(value = "item_lines")
   private List<ItemLine> itemLines;
   @Field(value = "special_fields")
   private List<SpecialField> specialFields;
   @Field(value = "summary_fields")
   private List<SummaryField> summaryFields;
-  @OneToOne( fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinProperty(name = "customer")
-  @JsonIgnore
   private CustomerEntity customer;
 }

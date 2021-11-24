@@ -1,10 +1,13 @@
 package com.example.projectai.controller;
 
 import com.example.projectai.dto.CustomerDTO;
+import com.example.projectai.entity.UserEntity;
 import com.example.projectai.exception.RecordNotFoundException;
 import com.example.projectai.manager.ICustomerManagerService;
 import com.example.projectai.security.jwt.JwtProvider;
+import com.example.projectai.service.IUserService;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -25,6 +28,8 @@ public class CustomerController {
   ICustomerManagerService customerManagerService;
   @Autowired
   JwtProvider jwtProvider;
+  @Autowired
+  IUserService userService;
 
   @RequestMapping(value = "/customer", method = RequestMethod.GET)
   public ResponseEntity<List<CustomerDTO>> findAllCustomer() {
@@ -59,5 +64,21 @@ public class CustomerController {
     return ResponseEntity.ok(optionalCustomerDTO.get());
   }
 
+  @RequestMapping(value = "/customer", method = RequestMethod.DELETE)
+  public ResponseEntity<String> deleteCustomer(@RequestBody Map<String, List<String>> ids,
+      HttpServletRequest request) {
+    int count = 0;
+    if (jwtProvider.preHandle(request)) {
+      String username = jwtProvider.getUsernameFormToken(jwtProvider.getTokenWrapper());
+      Optional<UserEntity> optionalUser = userService.findByUsername(username);
+      if (optionalUser.isPresent() && optionalUser.get().getRole().getName().equals("ADMIN")) {
+        count = customerManagerService.delete(ids);
+        if (count == 0) {
+          throw new RecordNotFoundException("Not deleted element by ids: " + ids.toString());
+        }
+      }
+    }
+    return ResponseEntity.ok("Deleted by elements: " + count);
+  }
 
 }

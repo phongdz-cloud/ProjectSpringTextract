@@ -1,21 +1,24 @@
 package com.example.projectai.manager;
 
 import com.example.projectai.dto.PaymentDTO;
+import com.example.projectai.entity.CustomerEntity;
 import com.example.projectai.entity.PaymentEntity;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface IPaymentManagerService {
 
   List<PaymentDTO> findAllPaymentDTO();
 
-  PaymentDTO save(String username, MultipartFile file);
+  PaymentDTO save(String username, MultipartFile file,String type);
 
   PaymentDTO update(PaymentDTO paymentDTO);
 
-  Integer delete(String[] id);
+  Integer delete(Map<String,List<String>> id);
 
   List<PaymentEntity> findPaymentByCustomer(String username);
+
+  List<PaymentDTO> findAllPaymentByCustomer(String username);
 }
 

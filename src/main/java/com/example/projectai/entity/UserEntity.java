@@ -33,7 +33,6 @@ public class UserEntity implements Serializable {
   @Size(min = 6)
   @JsonIgnore
   private String password;
-  @Indexed(unique = true)
   @Field(value = "email")
   @NotNull(message = "Email must be not null!")
   @Email

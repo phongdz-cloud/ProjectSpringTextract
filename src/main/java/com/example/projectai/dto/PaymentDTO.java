@@ -1,6 +1,6 @@
 package com.example.projectai.dto;
 
-import com.example.projectai.entity.CustomerEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,12 +18,15 @@ public class PaymentDTO {
 
   private String uploadDate;
 
+  private String type;
+
   private List<ItemLine> itemLines;
 
   private List<SpecialField> specialFields;
 
   private List<SummaryField> summaryFields;
 
-  private CustomerEntity customer;
+  @JsonIgnore
+  private CustomerDTO customer;
 
 }

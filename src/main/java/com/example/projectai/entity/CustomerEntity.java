@@ -36,7 +36,7 @@ public class CustomerEntity {
   @NotNull(message = "monthly_spending must be not null")
   private String monthlySpending;
   @Field(value = "user")
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinProperty(name = "user")
   private UserEntity user;
 }

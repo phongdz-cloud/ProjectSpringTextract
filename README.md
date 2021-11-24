@@ -17,3 +17,11 @@ https://www.youtube.com/watch?v=BS5Dy6P02VM
 
 -- reflect
 https://stackoverflow.com/questions/47929674/modelmapper-mapping-list-of-entites-to-list-of-dto-objects
+-- git ignore
+git rm -r --cached .
+git add .
+git commit ""
+git push 
+
+-- Query
+https://javatechonline.com/spring-boot-mongodb-query-examples/

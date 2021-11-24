@@ -91,18 +91,9 @@ public class FirebaseStorageStrategy implements StorageStrategy {
     Blob blob = storage.get(BlobId.of(bucketName, fileName));
     ReadChannel reader = blob.reader();
     InputStream inputStream = Channels.newInputStream(reader);
-//    textractService.initializeTextract(inputStream);
     byte[] content = null;
     log.info("File downloaded successfully");
     return ResponseEntity.ok(textractService.textractEntity);
-//    content = IOUtils.toByteArray(inputStream);
-//    final ByteArrayResource byteArrayResource = new ByteArrayResource(content);
-//    return ResponseEntity
-//        .ok()
-//        .contentLength(content.length)
-//        .header("Content-type", "application/octet-stream")
-//        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-//        .body(byteArrayResource);
   }
 
   private String generateFileName(MultipartFile multiPart) {
@@ -112,7 +103,7 @@ public class FirebaseStorageStrategy implements StorageStrategy {
 
   public File convertMultiPartToFile(MultipartFile file) throws Exception {
     File convertedFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
-    FileOutputStream fos = new FileOutputStream(convertedFile);
+    FileOutputStream fos = new FileOutputStream(""+convertedFile);
     fos.write(file.getBytes());
     fos.close();
     return convertedFile;

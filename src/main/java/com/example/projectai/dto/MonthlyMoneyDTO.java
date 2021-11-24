@@ -1,7 +1,6 @@
 package com.example.projectai.dto;
 
-import com.example.projectai.entity.PaymentEntity;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,11 +16,11 @@ public class MonthlyMoneyDTO {
 
   private Float money;
 
-  private LocalDateTime date;
+  private String date;
 
   private String description;
 
+  @JsonIgnore
   private CustomerDTO customer;
 
-  private PaymentEntity payment;
 }

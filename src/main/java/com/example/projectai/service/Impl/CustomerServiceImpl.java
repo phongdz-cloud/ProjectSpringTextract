@@ -25,8 +25,13 @@ public class CustomerServiceImpl implements ICustomerService {
   }
 
   @Override
-  public void delete(CustomerEntity customerEntity) {
-    repository.delete(customerEntity);
+  public Boolean delete(String id) {
+    CustomerEntity customerEntity = repository.findById(id).orElse(null);
+    if (customerEntity != null) {
+      repository.delete(customerEntity);
+      return true;
+    }
+    return false;
   }
 
   @Override

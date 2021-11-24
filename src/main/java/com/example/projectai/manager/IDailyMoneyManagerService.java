@@ -2,6 +2,7 @@ package com.example.projectai.manager;
 
 import com.example.projectai.dto.DailyMoneyDTO;
 import java.util.List;
+import java.util.Map;
 
 public interface IDailyMoneyManagerService {
 
@@ -9,5 +10,5 @@ public interface IDailyMoneyManagerService {
 
   DailyMoneyDTO save(DailyMoneyDTO dailyMoneyDTO, String username);
 
-  void delete(DailyMoneyDTO dailyMoneyDTO);
+  Integer delete(Map<String, List<String>> ids) ;
 }

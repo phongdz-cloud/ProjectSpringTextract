@@ -1,5 +1,9 @@
 package com.example.projectai.entity;
 
+import io.github.kaiso.relmongo.annotation.CascadeType;
+import io.github.kaiso.relmongo.annotation.FetchType;
+import io.github.kaiso.relmongo.annotation.JoinProperty;
+import io.github.kaiso.relmongo.annotation.OneToOne;
 import java.time.LocalDateTime;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -26,13 +30,13 @@ public class MonthlyMoneyEntity {
   @NotNull(message = "money must be not null")
   private Float money;
   @Field(value = "date")
-  private LocalDateTime date;
+  private String date;
   @Field(value = "description")
   @NotNull(message = "description must be not null")
   @Size(min = 2)
   private String description;
-  @Field(value = "customer")
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+  @JoinProperty(name = "customer")
   private CustomerEntity customer;
-  @Field(value = "payment")
-  private PaymentEntity payment;
+
 }

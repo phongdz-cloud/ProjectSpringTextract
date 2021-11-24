@@ -4,6 +4,7 @@ import com.example.projectai.entity.DailyMoneyEntity;
 import com.example.projectai.repository.DailyMoneyRepository;
 import com.example.projectai.service.IDailyMoneyService;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,17 @@ public class DailyMoneyServiceImpl implements IDailyMoneyService {
   }
 
   @Override
-  public void delete(DailyMoneyEntity dailyMoneyEntity) {
-    repository.delete(dailyMoneyEntity);
+  public Boolean delete(String id) {
+    DailyMoneyEntity dailyMoney = repository.findById(id).orElse(null);
+    if(dailyMoney != null){
+      repository.delete(dailyMoney);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public Optional<DailyMoneyEntity> findByCustomer(String id) {
+    return repository.findByCustomer(id);
   }
 }

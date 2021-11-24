@@ -4,6 +4,7 @@ import com.example.projectai.entity.MonthlyMoneyEntity;
 import com.example.projectai.repository.MonthlyMoneyRepository;
 import com.example.projectai.service.IMonthlyMoneyService;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,17 @@ public class MonthlyMoneyServiceImpl implements IMonthlyMoneyService {
   }
 
   @Override
-  public void delete(MonthlyMoneyEntity monthlyMoneyEntity) {
-    repository.delete(monthlyMoneyEntity);
+  public Optional<MonthlyMoneyEntity> findByCustomer(String id) {
+    return repository.findByCustomer(id);
+  }
+
+  @Override
+  public Boolean delete(String id) {
+    MonthlyMoneyEntity monthlyMoneyEntity = repository.findById(id).orElse(null);
+    if (monthlyMoneyEntity != null) {
+      repository.delete(monthlyMoneyEntity);
+      return true;
+    }
+    return false;
   }
 }

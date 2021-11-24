@@ -35,7 +35,13 @@ public class PaymentServiceImpl implements IPaymentService {
   }
 
   @Override
-  public List<PaymentEntity> findByCustomer(String id) {
-    return repository.findByCustomer(id);
+  public List<PaymentEntity> findAllByCustomer(String id) {
+    return repository.findAllByCustomer(id);
   }
+
+  @Override
+  public List<PaymentEntity> findAllByCustomerAndType(String id, String type) {
+    return repository.findAllByCustomerAndType(id, type);
+  }
+
 }

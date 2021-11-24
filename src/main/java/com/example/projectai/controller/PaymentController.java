@@ -5,6 +5,7 @@ import com.example.projectai.exception.RecordNotFoundException;
 import com.example.projectai.manager.IPaymentManagerService;
 import com.example.projectai.security.jwt.JwtProvider;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +36,13 @@ public class PaymentController {
 
   @RequestMapping(value = "/payment", method = RequestMethod.POST)
   public ResponseEntity<PaymentDTO> createPayment(@RequestParam("file") MultipartFile file,
+      @RequestParam("type") String type,
       HttpServletRequest request
   ) {
     PaymentDTO paymentDTO = null;
     if (jwtProvider.preHandle(request)) {
       String username = jwtProvider.getUsernameFormToken(jwtProvider.getTokenWrapper());
-      paymentDTO = paymentManagerService.save(username, file);
+      paymentDTO = paymentManagerService.save(username, file, type);
       if (paymentDTO == null) {
         throw new RuntimeException("Not update bill customer: " + username);
       }
@@ -65,7 +67,7 @@ public class PaymentController {
   }
 
   @RequestMapping(value = "/payment", method = RequestMethod.DELETE)
-  public ResponseEntity<String> deletePayment(@RequestBody String[] ids,
+  public ResponseEntity<String> deletePayment(@RequestBody Map<String,List<String>> ids,
       HttpServletRequest request) {
     int count = 0;
     if (jwtProvider.preHandle(request)) {
@@ -79,4 +81,20 @@ public class PaymentController {
     }
     return ResponseEntity.ok("Deleted by elements: " + count);
   }
+
+  @RequestMapping(value = "/paymentOfCustomer", method = RequestMethod.GET)
+  public ResponseEntity<List<PaymentDTO>> getPaymentOfCustomer(HttpServletRequest request) {
+    List<PaymentDTO> paymentDTOS = null;
+    if (jwtProvider.preHandle(request)) {
+      String username = jwtProvider.getUsernameFormToken(jwtProvider.getTokenWrapper());
+      if (username != null) {
+        paymentDTOS = paymentManagerService.findAllPaymentByCustomer(username);
+        if (paymentDTOS == null) {
+          throw new RecordNotFoundException("Not payment of customer: " + username);
+        }
+      }
+    }
+    return ResponseEntity.ok(paymentDTOS);
+  }
+
 }

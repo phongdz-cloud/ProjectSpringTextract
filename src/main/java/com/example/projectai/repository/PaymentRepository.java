@@ -10,7 +10,8 @@ import org.springframework.stereotype.Repository;
 public interface PaymentRepository extends MongoRepository<PaymentEntity, String> {
 
   @Query("{'customer.id': ?0}")
-  List<PaymentEntity> findByCustomer(final String id);
+  List<PaymentEntity> findAllByCustomer(final String id);
 
-
+  @Query("{'customer.id': ?0, type: ?1}")
+  List<PaymentEntity> findAllByCustomerAndType(final String id, String type);
 }

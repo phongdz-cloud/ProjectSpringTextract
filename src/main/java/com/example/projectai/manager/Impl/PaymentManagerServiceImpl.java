@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,7 @@ public class PaymentManagerServiceImpl implements IPaymentManagerService {
   }
 
   @Override
-  public PaymentDTO save(String username, MultipartFile multiFile) {
+  public PaymentDTO save(String username, MultipartFile multiFile, String type) {
     try {
       UserEntity userEntity = userService.findByUsername(username).get();
       optionalCustomer = customerService.findCustomerByUserId(
@@ -65,6 +66,7 @@ public class PaymentManagerServiceImpl implements IPaymentManagerService {
         FileDTO fileDTO = firebaseStorageStrategy.uploadFileDTO(multiFile);
         if (fileDTO != null) {
           PaymentEntity paymentEntity = new PaymentEntity();
+          paymentEntity.setType(type);
           paymentEntity.setUploadDate(LocalDateTime.now().toString());
           paymentEntity.setCustomer(optionalCustomer.get());
           paymentEntity.setImageBill(fileDTO.getFileDownloadUri());
@@ -91,9 +93,9 @@ public class PaymentManagerServiceImpl implements IPaymentManagerService {
 
 
   @Override
-  public Integer delete(String[] ids) {
+  public Integer delete(Map<String, List<String>> ids) {
     int count = 0;
-    for (String id : ids) {
+    for (String id : ids.get("ids")) {
       if (paymentService.delete(id)) {
         count++;
       }
@@ -108,9 +110,25 @@ public class PaymentManagerServiceImpl implements IPaymentManagerService {
     optionalCustomer = customerService.findCustomerByUserId(
         userEntity.getId());
     if (optionalCustomer.isPresent()) {
-      paymentEntities = paymentService.findByCustomer(
+      paymentEntities = paymentService.findAllByCustomer(
           optionalCustomer.get().getId());
     }
     return paymentEntities;
+  }
+
+  @Override
+  public List<PaymentDTO> findAllPaymentByCustomer(String username) {
+    List<PaymentDTO> paymentDTOS = null;
+    Type listType = new TypeToken<List<PaymentDTO>>() {
+    }.getType();
+    UserEntity userEntity = userService.findByUsername(username).get();
+    optionalCustomer = customerService.findCustomerByUserId(
+        userEntity.getId());
+    if (optionalCustomer.isPresent()) {
+      paymentDTOS = modelMapper.map(
+          paymentService.findAllByCustomerAndType(optionalCustomer.get().getId(), "DAILY"),
+          listType);
+    }
+    return paymentDTOS;
   }
 }

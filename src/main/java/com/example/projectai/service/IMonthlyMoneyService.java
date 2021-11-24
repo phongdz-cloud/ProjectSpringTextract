@@ -2,6 +2,7 @@ package com.example.projectai.service;
 
 import com.example.projectai.entity.MonthlyMoneyEntity;
 import java.util.List;
+import java.util.Optional;
 
 public interface IMonthlyMoneyService {
 
@@ -9,5 +10,7 @@ public interface IMonthlyMoneyService {
 
   MonthlyMoneyEntity save(MonthlyMoneyEntity monthlyMoneyEntity);
 
-  void delete(MonthlyMoneyEntity monthlyMoneyEntity);
+  Optional<MonthlyMoneyEntity> findByCustomer(String id);
+
+  Boolean delete(String id);
 }
