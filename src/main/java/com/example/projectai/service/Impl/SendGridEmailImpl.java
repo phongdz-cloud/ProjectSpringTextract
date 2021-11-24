@@ -33,9 +33,9 @@ public class SendGridEmailImpl implements ISendGridEmailService {
   }
 
   @Override
-  public void sendMail(String recepient, String template, String subject) {
+  public void sendMail(String recipient, String template, String subject) {
     try {
-      Email to = new Email(recepient);
+      Email to = new Email(recipient);
       Content content = new Content("text/html",template);
       Mail mail = new Mail(this.from,subject,to,content);
       Request request = new Request();
