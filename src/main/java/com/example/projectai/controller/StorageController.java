@@ -27,7 +27,6 @@ public class StorageController {
   @Autowired
   private FirebaseStorageStrategy storageStrategy;
 
-
   @RequestMapping(value = "upload-file", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Transactional
   public ResponseEntity<FileDTO> uploadInvestigation(@RequestParam("file") MultipartFile file)
