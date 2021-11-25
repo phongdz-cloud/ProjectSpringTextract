@@ -19,5 +19,9 @@ public class CustomerDTO {
 
   private String monthlySpending;
 
+  private Float totalDaily;
+
+  private Float totalMonthly;
+
   private UserDTO user;
 }
