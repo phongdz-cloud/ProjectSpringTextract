@@ -139,9 +139,11 @@ public class TextractServiceImpl implements ITextractService {
                 if (price.contains(",")) {
                   int index = price.indexOf(",");
                   price = price.substring(0, index) + "." + price.substring(index + 1);
-                } else if (price.indexOf("$") == 0) {
+                }
+                if (price.indexOf("$") == 0) {
                   price = price.substring(1);
-                } else if (price.indexOf("$") == price.length()) {
+                }
+                if (price.indexOf("$") == price.length()) {
                   price = price.substring(0, price.length() - 1);
                 }
                 itemLine.setPrice(Float.parseFloat(price));
