@@ -25,3 +25,6 @@ git push
 
 -- Query
 https://javatechonline.com/spring-boot-mongodb-query-examples/
+
+-- mvn
+mvn install -DskipTests

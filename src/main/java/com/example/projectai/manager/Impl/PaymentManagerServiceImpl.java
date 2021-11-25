@@ -102,6 +102,9 @@ public class PaymentManagerServiceImpl implements IPaymentManagerService {
           paymentEntity = optionalPaymentEntity.get();
           paymentEntity.setUploadDate(LocalDateTime.now().toString());
           paymentEntity.setType(paymentDTO.getType());
+          if (paymentDTO.getSummaryFields() != null) {
+            paymentEntity.setSummaryFields(paymentDTO.getSummaryFields());
+          }
           paymentEntity.setItemLines(paymentDTO.getItemLines());
           paymentEntity.setSpecialFields(paymentDTO.getSpecialFields());
         }
