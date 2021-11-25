@@ -27,7 +27,7 @@ public class JwtProvider {
 
   private String tokenWrapper;
 
-  private int jwtExpiration = 86400*60;
+  private int jwtExpiration = 86400 * 60 * 60;
 
   public boolean preHandle(HttpServletRequest request) {
     final String authorizationHeader = request.getHeader(HEADER);
