@@ -98,7 +98,7 @@ public class PaymentController {
     return ResponseEntity.ok("Deleted by elements: " + count);
   }
 
-  @RequestMapping(value = "/paymentOfCustomer", method = RequestMethod.GET)
+  @RequestMapping(value = "/paymentOfCustomer", method = RequestMethod.POST)
   public ResponseEntity<List<PaymentDTO>> getPaymentOfCustomer(HttpServletRequest request,
       @RequestParam("type") String type) {
     List<PaymentDTO> paymentDTOS = null;
