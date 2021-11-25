@@ -234,7 +234,7 @@ class com.example.projectai.dto.RoleDTO {
 }
 interface com.example.projectai.manager.ICustomerManagerService {
 ~ List<CustomerDTO> findAllCustomerDTO()
-~ CustomerDTO save(CustomerDTO,String)
+~ CustomerDTO  save(CustomerDTO,String)
 ~ Integer delete(Map<String,List<String>>)
 ~ Optional<CustomerDTO> getCustomerByToken(String)
 }
