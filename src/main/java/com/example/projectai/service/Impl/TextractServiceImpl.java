@@ -99,6 +99,15 @@ public class TextractServiceImpl implements ITextractService {
             } else {
               SpecialField specialField = new SpecialField();
               specialField.setFieldName(type);
+              if (type.equals("TOTAL") && valueDetection.contains(",")) {
+                int index = valueDetection.indexOf(",");
+                valueDetection =
+                    valueDetection.substring(0, index) + "." + valueDetection.substring(index + 1);
+              } else if (type.equals("TOTAL") && valueDetection.indexOf("$") == 0) {
+                valueDetection = valueDetection.substring(1);
+              }else if (type.equals("TOTAL") && valueDetection.indexOf("$") == valueDetection.length()){
+                valueDetection = valueDetection.substring(0, valueDetection.length() - 1);
+              }
               specialField.setValue(valueDetection);
               specialField.setBoundingBox(boundingBox);
               textractDTO.getSpecialFields().add(specialField);
