@@ -81,4 +81,20 @@ public class MonthlyManagerServiceImpl implements IMonthlyMoneyManagerService {
     }
     return count;
   }
+
+  @Override
+  public MonthlyMoneyDTO getMonthlyMoneyByToken(String username) {
+    UserEntity userEntity = userService.findByUsername(username).get();
+    Optional<CustomerEntity> optionalCustomer = customerService.findCustomerByUserId(
+        userEntity.getId());
+    MonthlyMoneyDTO monthlyMoneyDTO = null;
+    if (optionalCustomer.isPresent()) {
+      Optional<MonthlyMoneyEntity> optionalMonthlyMoneyEntity = monthlyMoneyService.findByCustomer(
+          optionalCustomer.get().getId());
+      if (optionalMonthlyMoneyEntity.isPresent()) {
+        monthlyMoneyDTO = modelMapper.map(optionalMonthlyMoneyEntity.get(), MonthlyMoneyDTO.class);
+      }
+    }
+    return monthlyMoneyDTO;
+  }
 }

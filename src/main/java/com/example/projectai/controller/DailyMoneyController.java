@@ -32,6 +32,19 @@ public class DailyMoneyController {
     return ResponseEntity.ok(dailyMoneyManagerService.findAllDailyMoneyDTO());
   }
 
+  @RequestMapping(value = "/dailyOfCustomer", method = RequestMethod.GET)
+  public ResponseEntity<DailyMoneyDTO> finDailyByCustomer(HttpServletRequest request) {
+    DailyMoneyDTO dailyMoneyDTO = null;
+    if (jwtProvider.preHandle(request)) {
+      String username = jwtProvider.getUsernameFormToken(jwtProvider.getTokenWrapper());
+      dailyMoneyDTO = dailyMoneyManagerService.getDailyMoneyByToken(username);
+      if (dailyMoneyDTO == null) {
+        throw new RecordNotFoundException("Not find dailyMoney by customer: " + username);
+      }
+    }
+    return ResponseEntity.ok(dailyMoneyDTO);
+  }
+
   @RequestMapping(value = "/daily", method = RequestMethod.POST)
   public ResponseEntity<DailyMoneyDTO> createDaily(@Valid @RequestBody DailyMoneyDTO dailyMoneyDTO,
       HttpServletRequest request) {

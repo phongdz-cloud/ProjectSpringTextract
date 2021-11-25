@@ -89,6 +89,22 @@ public class DailyMoneyManagerServiceImpl implements IDailyMoneyManagerService {
     return count;
   }
 
+  @Override
+  public DailyMoneyDTO getDailyMoneyByToken(String username) {
+    UserEntity userEntity = userService.findByUsername(username).get();
+    Optional<CustomerEntity> optionalCustomer = customerService.findCustomerByUserId(
+        userEntity.getId());
+    DailyMoneyDTO dailyMoneyDTO = null;
+    if (optionalCustomer.isPresent()) {
+      Optional<DailyMoneyEntity> optionalDailyMoney = dailyMoneyService.findByCustomer(
+          optionalCustomer.get().getId());
+      if (optionalDailyMoney.isPresent()) {
+        dailyMoneyDTO = modelMapper.map(optionalDailyMoney.get(), DailyMoneyDTO.class);
+      }
+    }
+    return dailyMoneyDTO;
+  }
+
 
   public List<PaymentEntity> findPaymentByCustomer(String username) {
     List<PaymentEntity> paymentEntities = new ArrayList<>();

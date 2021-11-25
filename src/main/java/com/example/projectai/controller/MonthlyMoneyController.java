@@ -32,6 +32,19 @@ public class MonthlyMoneyController {
     return ResponseEntity.ok(monthlyMoneyManagerService.findAllMonthlyMoneyDTO());
   }
 
+  @RequestMapping(value = "/monthOfCustomer", method = RequestMethod.GET)
+  public ResponseEntity<MonthlyMoneyDTO> findMonthlyByCustomer(HttpServletRequest request) {
+    MonthlyMoneyDTO monthlyMoneyDTO = null;
+    if (jwtProvider.preHandle(request)) {
+      String username = jwtProvider.getUsernameFormToken(jwtProvider.getTokenWrapper());
+      monthlyMoneyDTO = monthlyMoneyManagerService.getMonthlyMoneyByToken(username);
+      if (monthlyMoneyDTO == null) {
+        throw new RecordNotFoundException("Not find monthMoney by customer: " + username);
+      }
+    }
+    return ResponseEntity.ok(monthlyMoneyDTO);
+  }
+
   @RequestMapping(value = "/month", method = RequestMethod.POST)
   public ResponseEntity<MonthlyMoneyDTO> createMonthMoney(
       @Valid @RequestBody MonthlyMoneyDTO monthlyMoneyDTO, HttpServletRequest request) {

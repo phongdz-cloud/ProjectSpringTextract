@@ -11,4 +11,6 @@ public interface IDailyMoneyManagerService {
   DailyMoneyDTO save(DailyMoneyDTO dailyMoneyDTO, String username);
 
   Integer delete(Map<String, List<String>> ids) ;
+
+  DailyMoneyDTO getDailyMoneyByToken(String username);
 }
