@@ -11,7 +11,11 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.textract.TextractClient;
@@ -28,6 +32,19 @@ import software.amazon.awssdk.services.textract.model.LineItemGroup;
 public class TextractServiceImpl implements ITextractService {
 
   public TextractDTO textractDTO = null;
+  private AwsBasicCredentials awsCreds;
+  private final Environment environment;
+
+  public TextractServiceImpl(Environment environment) {
+    this.environment = environment;
+  }
+
+
+  @PostConstruct
+  private void initializeAWS() {
+    awsCreds = AwsBasicCredentials.create(environment.getRequiredProperty("ACCESS_KEY_ID_AWS")
+        , environment.getRequiredProperty("SECRET_ACCESS_KEY_AWS"));
+  }
 
   public void initializeTextract(File file) {
     try {
@@ -43,6 +60,7 @@ public class TextractServiceImpl implements ITextractService {
       list.add(FeatureType.FORMS);
       TextractClient textractClient = TextractClient
           .builder()
+          .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
           .region(Region.US_EAST_1)
           .build();
       AnalyzeExpenseRequest request = AnalyzeExpenseRequest
