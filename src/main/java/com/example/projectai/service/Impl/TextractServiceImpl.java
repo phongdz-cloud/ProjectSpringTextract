@@ -11,6 +11,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -99,16 +101,8 @@ public class TextractServiceImpl implements ITextractService {
             } else {
               SpecialField specialField = new SpecialField();
               specialField.setFieldName(type);
-              if (type.equals("TOTAL") && valueDetection.contains(",")) {
-                int index = valueDetection.indexOf(",");
-                valueDetection =
-                    valueDetection.substring(0, index) + "." + valueDetection.substring(index + 1);
-              }
-              if (type.equals("TOTAL") && valueDetection.indexOf("$") == 0) {
-                valueDetection = valueDetection.substring(1);
-              }
-              if (type.equals("TOTAL") && valueDetection.indexOf("$") == valueDetection.length()) {
-                valueDetection = valueDetection.substring(0, valueDetection.length() - 1);
+              if (type.equals("TOTAL")) {
+                valueDetection = checkTotalPayment(valueDetection);
               }
               specialField.setValue(valueDetection);
               specialField.setBoundingBox(boundingBox);
@@ -158,5 +152,14 @@ public class TextractServiceImpl implements ITextractService {
         }
       }
     }
+  }
+
+  public String checkTotalPayment(String total) {
+    Pattern regex = Pattern.compile("(\\d+\\.\\d{1,9})");
+    Matcher m = regex.matcher(total);
+    if (m.find()) {
+      return m.group();
+    }
+    return "0.00";
   }
 }
