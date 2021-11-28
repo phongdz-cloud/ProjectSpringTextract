@@ -147,19 +147,19 @@ public class TextractServiceImpl implements ITextractService {
 
   public String checkTotalPayment(String total) {
     Pattern regex = Pattern.compile("(\\d+\\.\\d{1,9})");
+    if (total.contains(",")) {
+      int index = total.indexOf(",");
+      total = total.substring(0, index) + "." + total.substring(index + 1);
+    }
     Matcher m = regex.matcher(total);
+    String money = "0.00";
     try {
       if (m.find()) {
-        String money = m.group();
-        if (money.contains(",")) {
-          int index = money.indexOf(",");
-          money = money.substring(0, index) + "." + money.substring(index + 1);
-          return money;
-        }
+        money = m.group();
       }
     } catch (Exception ex) {
       ex.printStackTrace();
     }
-    return "0.00";
+    return money;
   }
 }
