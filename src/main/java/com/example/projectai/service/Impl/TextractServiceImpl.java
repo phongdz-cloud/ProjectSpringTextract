@@ -130,16 +130,7 @@ public class TextractServiceImpl implements ITextractService {
               if (name != null && price != null) {
                 ItemLine itemLine = new ItemLine();
                 itemLine.setItem(name);
-                if (price.contains(",")) {
-                  int index = price.indexOf(",");
-                  price = price.substring(0, index) + "." + price.substring(index + 1);
-                }
-                if (price.indexOf("$") == 0) {
-                  price = price.substring(1);
-                }
-                if (price.indexOf("$") == price.length()) {
-                  price = price.substring(0, price.length() - 1);
-                }
+                price = checkTotalPayment(price);
                 itemLine.setPrice(Float.parseFloat(price));
                 boundingBoxItem.setBox(lineItemFields.lineItemExpenseFields().get(0));
                 boundingBoxPrice.setBox(lineItemFields.lineItemExpenseFields().get(1));
